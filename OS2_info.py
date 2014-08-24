@@ -129,7 +129,7 @@ if __name__ == '__main__':
 									  e.g OS2_info.py -i "/DroidSansArabic_OLD.otf;/DroidSansArabic.otf" -p achVendID''')
 	parser.add_argument('-i', metavar='--input_font', help='Font file', required=False)
 	parser.add_argument('-p', metavar='--os2_property', help='Property as per the OS/2 format', default='all')
-	parser.add_argument('-c', metavar='--compare', help='Take a file name as a param')
+	parser.add_argument('--compare', help='Take a file name as a param')
 
 	args = parser.parse_args()
 
@@ -150,16 +150,16 @@ if __name__ == '__main__':
 				operation(i)
 		else:
 			operation(args.i)
-	if args.c is not None:
-		if path.isfile(args.c):
-			c = Compare(args.c)
-			print '\033[95mRespective Comparison between\033[0m'
+	if args.compare is not None:
+		if path.isfile(args.compare):
+			c = Compare(args.compare)
+			print '\033[95mRespective Comparison\033[0m'
 			for section in c.readMetrics(None)[0]:
 				print '\033[93m%s\033[0m' %section
 			for i in OS2:
 				print '\033[94m%s\033[0m' %i
 				c.duplicates(c.readMetrics(i)[1])
 		else:
-			print args.c, 'was not found'
+			print args.compare, 'was not found'
 
 

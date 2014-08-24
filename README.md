@@ -73,7 +73,7 @@ usWinDescent = 259
 ```
 ---
 ```
-python OS2_info.py -c fonts.metrics
+python OS2_info.py --compare fonts.metrics
 ```
 Will produce:
 
