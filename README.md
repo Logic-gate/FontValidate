@@ -6,7 +6,7 @@ OS/2 info
 ---
 
 ```
-python OS2_info.py -i 'Ubuntu-B.ttf;Ubuntu-R.ttf' >> fonts.metrics
+python OS2_info.py -i 'Ubuntu-B.ttf Ubuntu-R.ttf'
 ```
 Will generate:
 
@@ -73,12 +73,16 @@ usWinDescent = 259
 ```
 ---
 ```
-python OS2_info.py --compare fonts.metrics
+python OS2_info.py -i 'Ubuntu-B.ttf Ubuntu-R.ttf' --compare
 ```
 Will produce:
 
 ```
-Respective Comparison between
+.
+..
+...
+
+Respective Comparison
 Ubuntu-BI
 Ubuntu-R
 xAvgCharWidth

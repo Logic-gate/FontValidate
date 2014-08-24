@@ -8,6 +8,11 @@ verion = '0.2'
 
 change_log ='''
 
+
+2014-08-24
+
+	* removed param from compare arg; empty arg to compare
+
 2014-08-22 
 
 	* added compare class
@@ -17,7 +22,8 @@ from fontTools import ttLib
 from collections import defaultdict, OrderedDict, Counter
 import argparse
 import ConfigParser
-from os import path
+from os import path, system
+
 
 OS2 = [ 'xAvgCharWidth', 
 			'usWeightClass',
@@ -129,7 +135,7 @@ if __name__ == '__main__':
 									  e.g OS2_info.py -i "/DroidSansArabic_OLD.otf;/DroidSansArabic.otf" -p achVendID''')
 	parser.add_argument('-i', metavar='--input_font', help='Font file', required=False)
 	parser.add_argument('-p', metavar='--os2_property', help='Property as per the OS/2 format', default='all')
-	parser.add_argument('--compare', help='Take a file name as a param')
+	parser.add_argument('--compare', action='store_true')
 
 	args = parser.parse_args()
 
@@ -142,24 +148,29 @@ if __name__ == '__main__':
 			OS.validate('singular', args.p)
 
 	if args.i is not None:
-		if ';' in args.i:
-			font_list = args.i.split(';')
+		if ' ' in args.i:
+			font_list = args.i.split(' ')
 			for i in font_list:
 			
 				print '\n[%s]' %i
 				operation(i)
 		else:
 			operation(args.i)
-	if args.compare is not None:
-		if path.isfile(args.compare):
-			c = Compare(args.compare)
-			print '\033[95mRespective Comparison\033[0m'
+	if args.compare:
+		if ' ' in args.i:
+		#if path.isfile(args.compare):
+			compare_file = 'fonts.metrics'
+			system('rm %s' %compare_file) #just to be safe
+			system("python %s -i '%s' >> %s" %(__file__, args.i, compare_file)) 
+			c = Compare(compare_file)
+			print '\n\033[95mRespective Comparison\033[0m'
 			for section in c.readMetrics(None)[0]:
 				print '\033[93m%s\033[0m' %section
 			for i in OS2:
 				print '\033[94m%s\033[0m' %i
 				c.duplicates(c.readMetrics(i)[1])
+			system('rm %s' %compare_file)
 		else:
-			print args.compare, 'was not found'
+			print '\n\033[91mCannot compare one file...smart***\033[0ms'
 
 
