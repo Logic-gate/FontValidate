@@ -23,6 +23,7 @@ from collections import defaultdict, OrderedDict, Counter
 import argparse
 import ConfigParser
 from os import path, system
+import sys
 
 
 OS2 = [ 'xAvgCharWidth', 
@@ -137,40 +138,31 @@ if __name__ == '__main__':
 	parser.add_argument('-p', metavar='--os2_property', help='Property as per the OS/2 format', default='all')
 	parser.add_argument('--compare', action='store_true')
 
-	args = parser.parse_args()
-
 	def operation(font):
 		OS = GetMetrics(font)
-		if args.p == 'all':
-			OS.validate(args.p, None)
-			#OS.SetConfig(i)
-		else:
-			OS.validate('singular', args.p)
-
-	if args.i is not None:
-		if ' ' in args.i:
-			font_list = args.i.split(' ')
-			for i in font_list:
+		OS.validate('all', None)
+	file_1 = sys.argv[1]
+	file_2 = sys.argv[2]
+	
+	if '--compare' in sys.argv:
+		compare_file = 'fonts.metrics'
+		system("python %s -i '%s %s'" %(__file__, sys.argv[1], sys.argv[2]))
+		system("python %s -i '%s %s' >> %s" %(__file__, sys.argv[1], sys.argv[2], compare_file)) 
+		c = Compare(compare_file)
 			
+		for section in c.readMetrics(None)[0]:
+			print '%s' %section
+		for i in OS2:
+			print '%s' %i
+			c.duplicates(c.readMetrics(i)[1])
+		system('rm %s' %compare_file)
+
+	if '-i' in sys.argv:
+		if ' ' in sys.argv[2]:
+			font_list = sys.argv[2].split(' ')
+			for i in font_list:		
 				print '\n[%s]' %i
 				operation(i)
+				print '\n'
 		else:
-			operation(args.i)
-	if args.compare:
-		if ' ' in args.i:
-		#if path.isfile(args.compare):
-			compare_file = 'fonts.metrics'
-			#system('rm %s' %compare_file) #just to be safe
-			system("python %s -i '%s' >> %s" %(__file__, args.i, compare_file)) 
-			c = Compare(compare_file)
-			#print '\n\033[95mRespective Comparison\033[0m'
-			for section in c.readMetrics(None)[0]:
-				print '%s' %section
-			for i in OS2:
-				print '%s' %i
-				c.duplicates(c.readMetrics(i)[1])
-			system('rm %s' %compare_file)
-		else:
-			print 'Cannot compare one file...smart***'
-
-
+			operation(sys.argv[2])
