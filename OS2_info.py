@@ -122,9 +122,9 @@ class Compare:
 		'''FIXME if given multi-font metric files and two have an equal value, there is no way to tell which metric file is diff'''
 		remove = list(OrderedDict.fromkeys(values))
 		if len(remove) > 1:
-			print '\033[91m%s\033[0m' %remove
+			print '%s' %remove
 		else:
-			print '\033[92mValues Are Equal\033[0m\n'
+			print 'Values Are Equal\n'
 	
 
 if __name__ == '__main__':
@@ -160,17 +160,17 @@ if __name__ == '__main__':
 		if ' ' in args.i:
 		#if path.isfile(args.compare):
 			compare_file = 'fonts.metrics'
-			system('rm %s' %compare_file) #just to be safe
+			#system('rm %s' %compare_file) #just to be safe
 			system("python %s -i '%s' >> %s" %(__file__, args.i, compare_file)) 
 			c = Compare(compare_file)
-			print '\n\033[95mRespective Comparison\033[0m'
+			#print '\n\033[95mRespective Comparison\033[0m'
 			for section in c.readMetrics(None)[0]:
-				print '\033[93m%s\033[0m' %section
+				print '%s' %section
 			for i in OS2:
-				print '\033[94m%s\033[0m' %i
+				print '%s' %i
 				c.duplicates(c.readMetrics(i)[1])
 			system('rm %s' %compare_file)
 		else:
-			print '\n\033[91mCannot compare one file...smart***\033[0ms'
+			print 'Cannot compare one file...smart***'
 
 
