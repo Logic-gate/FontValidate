@@ -138,11 +138,19 @@ if __name__ == '__main__':
 	parser.add_argument('-p', metavar='--os2_property', help='Property as per the OS/2 format', default='all')
 	parser.add_argument('--compare', action='store_true')
 
-	def operation(font):
+	def operation(font, mode, param):
 		OS = GetMetrics(font)
-		OS.validate('all', None)
+		OS.validate(mode, param)
 	file_1 = sys.argv[1]
 	file_2 = sys.argv[2]
+
+	def original(file_name, properties, new_value, out_file):
+		name = ttLib.TTFont(file_name)
+		OS2 = name['OS/2'].__dict__
+		OS2[properties] = int(new_value)
+		name.save(out_file)
+
+			
 	
 	if '--compare' in sys.argv:
 		compare_file = 'fonts.metrics'
@@ -162,7 +170,24 @@ if __name__ == '__main__':
 			font_list = sys.argv[2].split(' ')
 			for i in font_list:		
 				print '\n[%s]' %i
-				operation(i)
+				operation(i, 'all', None)
 				print '\n'
-		else:
-			operation(sys.argv[2])
+
+	if '-alt' in sys.argv:
+		argv = sys.argv[2:]
+		file_name, properties, new_value, out_file = argv
+		[original(f, p, n, o) for f, p, n, o in [argv]]
+		sys.exit(0)
+
+	if '-p' in sys.argv:
+		try:
+			argv = sys.argv[2:]
+			file_, param = argv
+			[operation(f, 'singular', p) for f, p in [argv]]
+			
+		except ValueError:
+			print 'Missing an argument. The correct syntax is\n%s font.ttf param' %__file__
+
+		
+	else:
+		operation(sys.argv[2], 'all', None)

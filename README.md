@@ -173,5 +173,14 @@ python OS2_info.py -i 'font2.ttf' >> font2.metrics
 You can also retrieve individual OS/2 properties:
 
 ```
-python OS2_info.py -i 'font1.ttf' -p fsLastCharIndex
+python OS2_info.py -p 'font.ttf' fsLastCharIndex
+```
+
+---
+
+To alter OS/2 properties:
+
+```
+python OS2_info.py -alt font.ttf usWinAscent 1919 output_font.ttf 
+
 ```
